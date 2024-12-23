@@ -63,6 +63,17 @@ if [[ "$ZSH_SYSTEM_CLIPBOARD_METHOD" == "" ]]; then
       ;;
   esac
 fi
+function _zsh_system_clipboard_method_refresh(){
+  if [[ -f ${XDG_CONFIG_HOME:-$HOME/.config}/zsh-system-clipboard/method ]]; then
+    _zsh_system_clipboard_method_current=$(cat \
+      ${XDG_CONFIG_HOME:-$HOME/.config}/zsh-system-clipboard/method \
+    )
+  else
+    _zsh_system_clipboard_method_current=$ZSH_SYSTEM_CLIPBOARD_METHOD
+  fi
+}
+_zsh_system_clipboard_method_refresh
+
 unfunction _zsh_system_clipboard_error
 unfunction _zsh_system_clipboard_suggest_to_install
 unfunction _zsh_system_clipboard_command_exists
@@ -96,8 +107,14 @@ function zsh-system-clipboard-get-pb(){ pbpaste; }
 function zsh-system-clipboard-set-termux(){ termux-clipboard-set; }
 function zsh-system-clipboard-get-termux(){ termux-clipboard-get; }
 
-function zsh-system-clipboard-set(){ zsh-system-clipboard-set-${ZSH_SYSTEM_CLIPBOARD_METHOD}; }
-function zsh-system-clipboard-get(){ zsh-system-clipboard-get-${ZSH_SYSTEM_CLIPBOARD_METHOD}; }
+function zsh-system-clipboard-set(){
+  _zsh_system_clipboard_method_refresh
+  zsh-system-clipboard-set-${_zsh_system_clipboard_method_current}
+}
+function zsh-system-clipboard-get(){
+  _zsh_system_clipboard_method_refresh
+  zsh-system-clipboard-get-${_zsh_system_clipboard_method_current}
+}
 
 function zsh-system-clipboard-vicmd-vi-yank() {
   zle vi-yank
