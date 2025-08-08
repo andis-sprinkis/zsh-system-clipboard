@@ -57,6 +57,30 @@ Sets the clipboard method to either of these options:
 | `pb`         | Use `pbcopy` and `pbpaste` on Darwin - method used by default on OSx. |
 | `termux`     | Use [Termux:API](https://wiki.termux.com/wiki/Termux:API) - method used by default on Android's termux |
 
+If you'd like to change the current clipboard method without restarting your shell - you can run this command:
+
+```zsh
+# Needed only for the first time of course. If you don't set XDG_CONFIG_HOME,
+# use simply ~/.config .
+mkdir -p ${XDG_CONFIG_HOME:-$HOME/.config}/zsh-system-clipboard
+# Here _method_ is any method explained above in the first column.
+echo _method_ > ${XDG_CONFIG_HOME:-$HOME/.config}/zsh-system-clipboard/method
+```
+
+Here's an example use-case: You use Tmux inside a Windows Subsystem for Linux (WSL), and you access that Tmux session remotely, also when the Windows host is locked after you left the station. You may experience after it is locked that `clip.exe` is being denied access to the system clipboard. However, you still want to be able to copy and paste from Tmux's buffers to & from your editor seamlessly with the `+` / `*` buffers. You can do that by:
+
+```zsh
+echo tmux > ${XDG_CONFIG_HOME:-$HOME/.config}/zsh-system-clipboard/method
+```
+
+And then in Neovim, even in already open sessions you can run:
+
+```vim
+let g:clipboard = 'tmux'
+```
+
+Particularly in this example, with Neovim, this will continue to copy your Neovim selections to the Wayland clipboard, if it is available.
+
 ### `ZSH_SYSTEM_CLIPBOARD_DISABLE_DEFAULT_MAPS`
 
 If set to a non-empty value, it disables the default bindings zsh-system-clipboard uses. Why would you want to do that?
