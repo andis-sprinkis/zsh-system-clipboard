@@ -64,6 +64,8 @@ if [[ "$ZSH_SYSTEM_CLIPBOARD_METHOD" == "" ]]; then
   esac
 fi
 function _zsh_system_clipboard_method_refresh(){
+  typeset -g _zsh_system_clipboard_method_current
+
   if [[ -f ${XDG_CONFIG_HOME:-$HOME/.config}/zsh-system-clipboard/method ]]; then
     _zsh_system_clipboard_method_current=$(cat \
       ${XDG_CONFIG_HOME:-$HOME/.config}/zsh-system-clipboard/method \
